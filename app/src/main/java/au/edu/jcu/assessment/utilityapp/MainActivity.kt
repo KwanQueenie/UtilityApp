@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -67,6 +66,7 @@ fun UtilityApp(
     val city by viewModel.selectedCity.collectAsStateWithLifecycle()
     val savedCities by viewModel.savedCities.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
+    val search by viewModel.search.collectAsStateWithLifecycle()
 
     var currentTab by rememberSaveable { mutableStateOf(AppTab.WEATHER) }
 
@@ -118,8 +118,18 @@ fun UtilityApp(
                         onAddCity = { currentTab = AppTab.SETTINGS },
                         modifier = Modifier.padding(innerPadding),
                     )
-                    // Placeholder settings screen from the starter template (replaced in the next step).
-                    AppTab.SETTINGS -> Box(Modifier.padding(innerPadding)) { SettingsScreen() }
+                    AppTab.SETTINGS -> SettingsScreen(
+                        settings = settings,
+                        selectedCity = city,
+                        search = search,
+                        onSettingsChange = viewModel::updateSettings,
+                        onSearchQueryChange = viewModel::onSearchQueryChange,
+                        onCityPicked = { picked ->
+                            viewModel.selectCity(picked)
+                            currentTab = AppTab.WEATHER // jump back so the user sees the result
+                        },
+                        modifier = Modifier.padding(innerPadding),
+                    )
                 }
             }
         }
