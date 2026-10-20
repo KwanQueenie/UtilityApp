@@ -44,3 +44,7 @@ fabric.properties
 
 # Google Services
 google-services.json
+
+# Kotlin compiler cache and Android Studio HTML exports
+.kotlin/
+exportToHTML/
